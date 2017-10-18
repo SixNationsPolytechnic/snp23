@@ -1,0 +1,205 @@
+[
+    {
+        "id": "2a44117.771e96e",
+        "type": "ibmiot out",
+        "z": "2a35a231.efc376",
+        "authentication": "boundService",
+        "apiKey": "",
+        "outputType": "cmd",
+        "deviceId": "playbulb23",
+        "deviceType": "playbulb",
+        "eventCommandType": "setColor",
+        "format": "json",
+        "data": "msg.payload",
+        "qos": 0,
+        "name": "toPiCandle",
+        "service": "registered",
+        "x": 760,
+        "y": 189.5,
+        "wires": []
+    },
+    {
+        "id": "aba48ad3.6e0ed8",
+        "type": "function",
+        "z": "2a35a231.efc376",
+        "name": "CheckAndSet",
+        "func": "var r=0;\nvar g=0;\nvar b=0;\n\nif (msg.observation.temp <=10)\n       b=255; \n\n\nif (msg.observation.temp >=20)\n       r=255; \n       \nif (msg.observation.temp >10 && msg.observation.temp <20 )\n{\n   r=255;\n   g=140;\n    \n}       \n       \n       \nvar newmsg = {\"cmd\" : \"setcolor\",\n\"mode\":\"\",\n\"speed\":\"\",\n\"rr\" : r,\n\"gg\" : g,\n\"bb\" : b\n    \n}\n\n\n\nmsg.payload=newmsg ;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 514,
+        "y": 186.5,
+        "wires": [
+            [
+                "2a44117.771e96e",
+                "fa85e0f5.6d1f78"
+            ]
+        ]
+    },
+    {
+        "id": "f5527270.7fc598",
+        "type": "function",
+        "z": "2a35a231.efc376",
+        "name": "Set to10",
+        "func": "msg.observation={}\nmsg.observation.temp = 10\nmsg.payload = 10;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 286.4285583496094,
+        "y": 143.21429443359375,
+        "wires": [
+            [
+                "aba48ad3.6e0ed8"
+            ]
+        ]
+    },
+    {
+        "id": "b56a468b.972f2",
+        "type": "inject",
+        "z": "2a35a231.efc376",
+        "name": "Cold",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 127.85711669921875,
+        "y": 134.64285278320312,
+        "wires": [
+            [
+                "f5527270.7fc598"
+            ]
+        ]
+    },
+    {
+        "id": "fa85e0f5.6d1f78",
+        "type": "debug",
+        "z": "2a35a231.efc376",
+        "name": "SendToCandle",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 771,
+        "y": 123.5,
+        "wires": []
+    },
+    {
+        "id": "6f7d92.b579fa7",
+        "type": "inject",
+        "z": "2a35a231.efc376",
+        "name": "Hot",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 138.28570556640625,
+        "y": 303.9285888671875,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8b625beb.e26568",
+        "type": "function",
+        "z": "2a35a231.efc376",
+        "name": "Set to 15",
+        "func": "msg.observation={}\nmsg.observation.temp = 15;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 293.5714111328125,
+        "y": 214.64285278320312,
+        "wires": [
+            [
+                "aba48ad3.6e0ed8"
+            ]
+        ]
+    },
+    {
+        "id": "a8388e4e.19bea8",
+        "type": "inject",
+        "z": "2a35a231.efc376",
+        "name": "Warm",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 122.14285278320312,
+        "y": 214.64285278320312,
+        "wires": [
+            [
+                "8b625beb.e26568"
+            ]
+        ]
+    },
+    {
+        "id": "14dbf134.d17af7",
+        "type": "e-mail",
+        "z": "2a35a231.efc376",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "name": "snpkid01@gmail.com",
+        "dname": "",
+        "x": 759,
+        "y": 497.5,
+        "wires": []
+    },
+    {
+        "id": "a35414b3.00f1e8",
+        "type": "function",
+        "z": "2a35a231.efc376",
+        "name": "Create Email",
+        "func": "msg.observation={}\nmsg.observation.temp=5;\n\nif (msg.observation.temp <10)\n{\n    msg.topic = \"SNP01 temp update hello Markus\"\n    msg.payload= \"Hello from Node-RED \"+\"\\nTemperature in Brantford is \"+msg.observation.temp \n\nnode.send(msg)\n}\n//return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 555,
+        "y": 487.5,
+        "wires": [
+            [
+                "14dbf134.d17af7"
+            ]
+        ]
+    },
+    {
+        "id": "3971d2ab.de10ce",
+        "type": "inject",
+        "z": "2a35a231.efc376",
+        "name": "Warm",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 355,
+        "y": 447.5,
+        "wires": [
+            [
+                "a35414b3.00f1e8"
+            ]
+        ]
+    },
+    {
+        "id": "f38fbc0e.e71188",
+        "type": "comment",
+        "z": "2a35a231.efc376",
+        "name": "GMAIL credential",
+        "info": "username: snpkid01@gmail.com\npassword: snpkids@01",
+        "x": 765,
+        "y": 327.5,
+        "wires": []
+    },
+    {
+        "id": "1ffbbda8.05af72",
+        "type": "comment",
+        "z": "2a35a231.efc376",
+        "name": "Github credential",
+        "info": "username: snpkid01@gmail.com\npassword: snpkid01",
+        "x": 796.4285888671875,
+        "y": 367.4999694824219,
+        "wires": []
+    }
+]
